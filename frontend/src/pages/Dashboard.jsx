@@ -29,20 +29,84 @@ function StatCard({ label, value, color, icon, delay }) {
 
 function Dashboard() {
   const [stats, setStats] = useState({ total: 0, solved: 0, pending: 0 });
+  const [resume, setResume] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const nav = useNavigate();
 
-  useEffect(() => { fetchStats(); }, []);
+  useEffect(() => { 
+    fetchStats();
+    fetchResume();
+    fetchInterviewQuestions();
+  }, []);
 
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await API.get("/questions/stats/all", { headers: { authorization: token } });
+      const res = await API.get("/questions/stats/all", { headers: { Authorization: token } });
       setStats(res.data);
     } catch {
       nav("/");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchResume = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await API.get("/resume", { headers: { Authorization: token } });
+      setResume(res.data);
+    } catch (err) {
+      console.log("No resume found");
+    }
+  };
+
+  const fetchInterviewQuestions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await API.get("/interview", { headers: { Authorization: token } });
+      setQuestions(res.data);
+    } catch (err) {
+      console.log("No questions found");
+    }
+  };
+
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await API.post("/resume/upload", formData, {
+        headers: { Authorization: token }
+      });
+      setResume(res.data);
+      alert("Resume uploaded and skills extracted!");
+    } catch (err) {
+      alert(err.response?.data?.msg || "Error uploading resume");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const generateQuestions = async () => {
+    setGenerating(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await API.post("/interview/generate", {}, { headers: { Authorization: token } });
+      setQuestions(res.data);
+      alert("Questions generated successfully!");
+    } catch (err) {
+      alert(err.response?.data?.msg || "Failed to generate questions");
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -85,6 +149,79 @@ function Dashboard() {
           <p style={{ color: "var(--text-muted)", fontSize: "15px" }}>
             {loading ? "Loading your stats…" : `${pct}% solved — keep pushing!`}
           </p>
+        </div>
+
+        {/* Resume Section */}
+        <div className="animate-fadeUp-d1" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "24px", marginBottom: "32px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+             <div>
+               <h3 style={{ fontSize: "18px", fontWeight: "700" }}>Resume Analysis</h3>
+               <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>Upload your resume to extract skills and generate questions</p>
+             </div>
+             <label style={{ padding: "8px 16px", background: "var(--accent)", color: "white", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "600", transition: "all 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "var(--accent-hover)"}
+              onMouseLeave={e => e.currentTarget.style.background = "var(--accent)"}
+             >
+               {uploading ? "Processing..." : "Upload PDF"}
+               <input type="file" accept=".pdf" onChange={handleUpload} style={{ display: "none" }} disabled={uploading} />
+             </label>
+          </div>
+
+          {resume && resume.skills.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "24px" }}>
+              {resume.skills.map(skill => (
+                <span key={skill} style={{ padding: "4px 12px", background: "var(--accent-dim)", border: "1px solid var(--accent-border)", color: "var(--accent)", borderRadius: "6px", fontSize: "12px", fontWeight: "600" }}>
+                  {skill}
+                </span>
+              ))}
+            </div>
+          ) : (
+            !uploading && <p style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center", padding: "20px", border: "1px dashed var(--border)", borderRadius: "12px", marginBottom: "24px" }}>No skills detected yet. Upload your resume to begin.</p>
+          )}
+
+          {resume && (
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "24px", marginTop: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h4 style={{ fontSize: "16px", fontWeight: "600" }}>Generated Questions</h4>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button 
+                    onClick={generateQuestions}
+                    disabled={generating}
+                    style={{ padding: "8px 16px", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "500", transition: "all 0.2s" }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = "var(--accent)"}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}
+                  >
+                    {generating ? "Generating..." : "Generate Questions"}
+                  </button>
+                  {questions.length > 0 && (
+                    <button 
+                      onClick={() => nav("/mock-interview")}
+                      style={{ padding: "8px 16px", background: "linear-gradient(135deg, var(--accent), #a78bfa)", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "600", transition: "all 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.transform = "scale(1.02)"}
+                      onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                    >
+                      Start Mock Interview →
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {questions.length > 0 ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
+                  {questions.map((q, idx) => (
+                    <div key={idx} style={{ padding: "16px", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "10px" }}>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                        <span style={{ background: "var(--accent-dim)", color: "var(--accent)", padding: "2px 8px", borderRadius: "4px", fontSize: "10px", fontWeight: "700", textTransform: "uppercase", marginTop: "2px" }}>{q.skill}</span>
+                        <p style={{ fontSize: "14px", fontWeight: "500", color: "var(--text)" }}>{q.question}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center", padding: "20px" }}>Click generate to create questions based on your skills.</p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Stats */}

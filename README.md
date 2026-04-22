@@ -1,205 +1,125 @@
-# PrepTrack 
+# ⚡ PrepTrack
 
-PrepTrack is a full-stack MERN project designed for CSE students to prepare for placements and technical interviews.
-
-It helps users track coding questions, practice aptitude, monitor progress, and stay resume-ready through a clean dashboard experience.
+**PrepTrack** is a high-fidelity, AI-driven interview preparation platform designed to help students and job seekers bridge the gap between their skills and industry expectations. By analyzing resumes and generating tailored technical questions, PrepTrack provides a personalized roadmap to career success.
 
 ---
 
-##  Features
+## 🚀 Features
 
-###  Authentication
+### ✅ Completed
+- **Secure Authentication**: JWT-based login and registration system.
+- **Dynamic Dashboard**: Real-time progress tracking with a premium, glassmorphic UI.
+- **Question Tracker**: Log and monitor your practice sessions across different topics.
+- **Smart Resume Analysis**: 
+    - PDF Resume Upload.
+    - Intelligent text parsing from complex PDF structures.
+    - Automated **Skill Extraction** (React, Node.js, Python, etc.).
+- **Live Skill Display**: Extracted skills are instantly visualized as tags on your profile.
+- **Database Persistence**: Fully integrated with MongoDB for robust data management.
 
-* User Registration
-* User Login
-* JWT Token Authentication
-* Protected Routes
-
-### Dashboard
-
-* Total Questions
-* Solved Questions
-* Pending Questions
-
-### Coding Question Tracker
-
-* Add Questions
-* View All Questions
-* Delete Questions
-* Difficulty Tracking (Easy / Medium / Hard)
-* Status Tracking (Solved / Pending)
-
-###  Aptitude Practice
-
-* Sample aptitude questions
-* Quantitative reasoning
-* Logical reasoning
-
-###  Resume Checklist
-
-* Resume Updated
-* GitHub Updated
-* LinkedIn Updated
-* Projects Added
-* Skills Updated
+### 🛠️ In Progress & Upcoming
+- **AI Question Generator**: Automatic creation of 3+ technical questions per extracted skill.
+- **Mock Interview Simulator**: Interactive session to practice answering generated questions.
+- **Timer-based Practice**: Realistic interview simulation with time constraints.
+- **Performance Analytics**: Visualized metrics of your strengths and weaknesses.
+- **Weak Topic Detection**: Smart suggestions on what to study next.
 
 ---
 
-##  Tech Stack
+## 📸 Screenshots
+
+| Dashboard View | Resume Analysis |
+| :---: | :---: |
+| ![Dashboard Placeholder](https://via.placeholder.com/600x350?text=PrepTrack+Dashboard) | ![Resume Analysis Placeholder](https://via.placeholder.com/600x350?text=Resume+Analysis+Card) |
+
+---
+
+## 💻 Tech Stack
 
 ### Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* React Router DOM
-* Axios
+- **Framework**: React.js 19 (Vite)
+- **Styling**: Tailwind CSS v4 (Vanilla CSS fallback)
+- **Animations**: Custom CSS Keyframes / Framer Motion (Ready)
+- **API Client**: Axios
 
 ### Backend
-
-* Node.js
-* Express.js
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Parsing**: `pdf-parse` & `multer`
+- **Security**: `bcryptjs` & `jsonwebtoken`
 
 ### Database
-
-* MongoDB Atlas
-* Mongoose
-
-### Authentication
-
-* JWT
-* bcryptjs
-
----
-
-## Project Structure
-
-```bash
-PrepTrack/
-│── backend/
-│   ├── config/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── server.js
-│   └── .env
-│
-│── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── api.js
-│   └── package.json
-│
-├── .gitignore
-└── README.md
-```
+- **Provider**: MongoDB Atlas
+- **ODM**: Mongoose
 
 ---
 
 ## ⚙️ Installation & Setup
 
-## 1️ Clone Repository
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas Account
 
+### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/preptrack.git
+git clone https://github.com/imannaswini/PrepTrack.git
 cd PrepTrack
 ```
 
----
-
-## 2 Backend Setup
-
+### 2. Backend Setup
 ```bash
 cd backend
 npm install
 ```
-
-Create a `.env` file inside backend folder:
-
+Create a `.env` file in the `backend` folder:
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
-For JWT key 
-Run directly in terminal:
-
-```
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
-
-Run backend:
-
+Start the server:
 ```bash
 npm run dev
 ```
 
----
-
-## 3️ Frontend Setup
-
-Open new terminal:
-
+### 3. Frontend Setup
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
 ```
 
+The application will be running at `http://localhost:5173`.
+
 ---
 
-##  Local URLs
+## 📁 Project Structure
 
-### Frontend
-
-```bash
-http://localhost:5173
+```text
+PrepTrack/
+├── backend/
+│   ├── config/         # Database configuration
+│   ├── middleware/     # Auth & Error handling
+│   ├── models/         # Mongoose schemas (User, Resume, Questions)
+│   ├── routes/         # API endpoints
+│   └── server.js       # Entry point
+├── frontend/
+│   ├── src/
+│   │   ├── api/        # Axios configuration
+│   │   ├── pages/      # Dashboard, Questions, Auth
+│   │   └── index.css   # Modern Design System (Tailwind v4)
+│   └── public/
+└── README.md
 ```
 
-### Backend
-
-```bash
-http://localhost:5000
-```
-
 ---
 
-##  Main Modules
-
-### Login / Register
-
-Secure authentication using JWT.
-
-### Dashboard
-
-Track interview preparation progress.
-
-### Questions Tracker
-
-Manage coding questions by topic and difficulty.
-
-### Aptitude Section
-
-Practice basic placement aptitude questions.
-
-### Resume Checklist
-
-Track resume readiness before placements.
-
----
-
-##  Future Improvements
-
-* Edit Question Feature
-* Search & Filter Questions
-* Daily Coding Challenge
-* Company-wise Preparation Roadmap
-* Resume Score Analyzer
-* Mock Interview Questions
-* Progress Charts
-* Dark Mode
+## 🗺️ Roadmap
+- [x] Phase 1: Foundation & Auth
+- [x] Phase 2: Resume Processing Engine
+- [ ] Phase 3: Mock Interview Module (Current Focus)
+- [ ] Phase 4: AI Evaluation & Feedback
+- [ ] Phase 5: Analytics Dashboard
 
 ---
 

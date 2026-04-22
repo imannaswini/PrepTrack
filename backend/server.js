@@ -16,8 +16,16 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// DEBUG LOGGING
+app.use((req, res, next) => {
+  console.log(`[DEBUG] ${req.method} ${req.url}`);
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/resume", require("./routes/resumeRoutes"));
+app.use("/api/interview", require("./routes/interviewRoutes"));
 
 app.get("/", (req, res) => {
   res.send("PrepTrack API Running");
